@@ -24,10 +24,11 @@ coverage
 build/Release
 
 # Dependency directory
-node_modules
-
+server/node_modules
+app/jspm_packages
 # Optional npm cache directory
 .npm
+.vscode
 
 # Optional REPL history
 .node_repl_history
