@@ -29,6 +29,6 @@ app/jspm_packages
 # Optional npm cache directory
 .npm
 .vscode
-
+.idea
 # Optional REPL history
 .node_repl_history
