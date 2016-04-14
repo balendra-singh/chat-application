@@ -2,21 +2,24 @@
 
 function ChatController(socket, $http) {
     var ctrl = this;
-    var channel = 'Angular';
+    ctrl.channel = false;
     ctrl.messages = [];
     ctrl.onChannelSelect = function (value) {
         ctrl.messages = [];
         socket.emit('join', {channel: value, user: ctrl.username});
-        channel = value;
+        ctrl.channel = value;
     };
 
-    ctrl.send = function() {
-        socket.emit('message', {username: ctrl.username, message: ctrl.message, channel: channel});
+    ctrl.send = function () {
+        if (ctrl.message[0] != '#') {
+            socket.emit('message', {username: ctrl.username, message: ctrl.message, channel: ctrl.channel});
+        } else {
+            socket.emit('private', {username: ctrl.username, message: ctrl.message})
+        }
         ctrl.message = '';
     };
 
     socket.on('message', function (data) {
-        console.log(data)
         ctrl.messages.push(data);
     });
 

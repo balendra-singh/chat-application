@@ -11,12 +11,6 @@ var channels = [
     'Laravel',
     'Symfony'
 ];
-var rooms = {
-    Angular: [],
-    React: [],
-    Laravel: [],
-    Symfony: []
-};
 
 httpServer.listen(3000, function () {
 });
@@ -28,28 +22,37 @@ app.get('/channels', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-    socket.on('name', function (data) {
-        if (users.indexOf(data.name) == -1) {
-            users.push(data.name);
-            socket.emit('nameValidation', true);
-        } else {
-            socket.emit('nameValidation', false);
-        }
-    });
 
-    socket.on('join', function(data) {
+    socket.on('join', function (data) {
         socket.join(data.channel);
-        rooms[data.channel].push({name: data.user, id: socket.id});
-        console.log(rooms.Laravel[0].id);
+        users.push({id: socket.id, name: data.user});
+        socket.username = data.user;
+        if (typeof socket.channel != 'undefined') {
+            socket.leave(socket.channel);
+        }
+        socket.channel = data.channel;
     });
 
-    socket.on('message', function(data) {
-        console.log(data);
+    socket.on('message', function (data) {
         io.sockets.in(data.channel).emit('message', {message: data.message, user: data.username});
     });
-
-    socket.on('disconnect', function() {
-        console.log(socket.id);
-        console.log(users)
-    })
+    socket.on('private', function (data) {
+        var message = data.message.split(" ");
+        var to_user = message[0].slice(1);
+        users.filter(function (user) {
+            if (user.name == to_user) {
+                var private_message = "(private) " + data.message.slice(to_user.length + 2);
+                io.sockets.connected[socket.id].emit('message', {message: private_message, user: "me -> " + to_user});
+                io.sockets.connected[user.id].emit('message', {message: private_message, user: data.username});
+            }
+        });
+    });
+    socket.on('disconnect', function () {
+        users = users.filter(function (user) {
+            if (user.id == socket.id) {
+                return false;
+            }
+            return true
+        });
+    });
 });

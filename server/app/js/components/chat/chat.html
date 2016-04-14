@@ -1,5 +1,5 @@
-
-{{$ctrl.username}}
+<div>Username: {{$ctrl.username}}</div>
+<div>Channel: {{$ctrl.channel}}</div>
 <div class="row">
     <div class="col-md-3">
         <channels-list channels="$ctrl.channels" select-channel="$ctrl.onChannelSelect(value)"></channels-list>
@@ -8,7 +8,7 @@
         <messages messages="$ctrl.messages"></messages>
     </div>
 </div>
-<div class="row">
+<div class="row" ng-if="$ctrl.channel">
     <div class="">
     </div>
     <div class="col-md-offset-3 col-md-9 well">
