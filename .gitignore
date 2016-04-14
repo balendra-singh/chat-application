@@ -25,7 +25,7 @@ build/Release
 
 # Dependency directory
 server/node_modules
-app/jspm_packages
+server/app/jspm_packages
 # Optional npm cache directory
 .npm
 .vscode

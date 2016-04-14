@@ -1,31 +1,55 @@
-const Sequelize = require('sequelize');
-const db = new Sequelize("mysql://root:root@localhost:8889/chat_app");
-var express = require('express');
+var express = require("express");
+var http = require("http");
 var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
-var jwt = require('express-jwt');
+var httpServer = http.Server(app);
+var io = require('socket.io')(httpServer);
 
-// Define messages table on database.
-const Message = db.define('message', {
-    uid: Sequelize.INTEGER,
-    message: Sequelize.TEXT
+var users = [];
+var channels = [
+    'Angular',
+    'React',
+    'Laravel',
+    'Symfony'
+];
+var rooms = {
+    Angular: [],
+    React: [],
+    Laravel: [],
+    Symfony: []
+};
+
+httpServer.listen(3000, function () {
 });
 
-// Define users table on database.
-const User = db.define('user', {
-    name: Sequelize.STRING
+app.use(express.static(__dirname + '/app/'));
+
+app.get('/channels', function (req, res) {
+    res.send(channels);
 });
 
-// Create or migrate database.
-db.sync();
+io.on('connection', function (socket) {
+    socket.on('name', function (data) {
+        if (users.indexOf(data.name) == -1) {
+            users.push(data.name);
+            socket.emit('nameValidation', true);
+        } else {
+            socket.emit('nameValidation', false);
+        }
+    });
 
-// Start an http-server at port :3000.
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+    socket.on('join', function(data) {
+        socket.join(data.channel);
+        rooms[data.channel].push({name: data.user, id: socket.id});
+        console.log(rooms.Laravel[0].id);
+    });
+
+    socket.on('message', function(data) {
+        console.log(data);
+        io.sockets.in(data.channel).emit('message', {message: data.message, user: data.username});
+    });
+
+    socket.on('disconnect', function() {
+        console.log(socket.id);
+        console.log(users)
+    })
 });
-
-// Server app folder.
-app.use(express.static(__dirname + './../app'));
-
-

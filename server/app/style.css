@@ -1,0 +1,7 @@
+.message:nth-child(odd) {
+    background-color: #ecf0f1;
+}
+
+.user {
+    background-color: #2ecc71;
+}
