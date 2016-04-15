@@ -1,2 +1,2 @@
 # chat-application
-Web chat application with AngularJS, JWT authentication, NodeJS and socket.io.
+Web chat application with AngularJS, NodeJS and socket.io.
