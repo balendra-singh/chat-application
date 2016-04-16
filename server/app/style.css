@@ -14,3 +14,7 @@
     margin: 0;
     width: 100%;
 }
+ul {
+    list-style: none;
+    padding: 0;
+}

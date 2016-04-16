@@ -1,5 +1,7 @@
+'use strict';
+
 angular.module('chatApp').factory('socket', function ($rootScope) {
-    var socket = io();
+    var socket = io('localhost:3000');
     return {
         on: function (eventName, callback) {
             socket.on(eventName, function () {
