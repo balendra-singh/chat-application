@@ -1,5 +1,5 @@
-<ul>
-    <li ng-repeat="channel in $ctrl.channels">
-        <button class="btn btn-warning" ng-click="$ctrl.selectChannel({value: channel})">{{channel}}</button>
-    </li>
-</ul>
+<select ng-model="channel"
+        ng-options="channel as channel for channel in $ctrl.channels"
+        ng-change="$ctrl.selectChannel({value: channel})"
+>
+</select>
