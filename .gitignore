@@ -32,4 +32,4 @@ server/app/jspm_packages
 .idea
 # Optional REPL history
 .node_repl_history
-#app/bower_components
+server/app/bower_components
